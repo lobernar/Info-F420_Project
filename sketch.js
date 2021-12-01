@@ -204,8 +204,6 @@ function assignPAndComputeVoronoi() {
 }
 
 function computeVoronoi(p) {
-  // TODO
-  //const distFunc = parseFormula();
   // Compute Voronoi regions
   for (let i = 0; i < height; i += SQUARE_SIZE) {
     for (let j = 0; j < width; j += SQUARE_SIZE) {
