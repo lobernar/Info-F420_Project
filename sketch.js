@@ -151,6 +151,7 @@ function mousePressed() {
   if (mouseOnButton(cerbysevButton)) {
     return;
   }
+  if (mouseOnInput()) return;
   points.push(new Point(mouseX, mouseY));
 }
 
@@ -227,6 +228,19 @@ function mouseOnButton(button) {
     (mouseX <= button.x + button.width) &
     (mouseY > button.y) &
     (mouseY < button.y + button.height)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function mouseOnInput() {
+  if (
+    (mouseX >= input.x) &
+    (mouseX <= input.x + input.width) &
+    (mouseY > input.y) &
+    (mouseY < input.y + input.height)
   ) {
     return true;
   } else {
