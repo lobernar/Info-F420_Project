@@ -1,5 +1,6 @@
 /* eslint-disable no-undef, no-unused-vars 
-Authors: Andrea Gonzato, Loïc Bernard
+Authors: Andrea Gonzato: 000528431,
+         Loïc Bernard: 00469510
 
 The basic idea if the code is the following:
   - Grouping the pixels in squares
@@ -9,13 +10,11 @@ The basic idea if the code is the following:
   - Repeat for every square
 
 We chose to implement a brute force algorithm. An 
-alternative would be Fortune's algorithm to compute
-the Voronoi diagram but is is also way more difficult to
-implement.
-
+alternative would be Fortune's algorithm.
 */
 
 class Point {
+  // Class written by Andrea
   constructor(x, y) {
     this.x = x;
     this.y = y;
@@ -42,11 +41,13 @@ class Point {
 }
 
 class Square {
+  // Class written by Andrea
   constructor(x, y, pointSite) {
     this.x = x;
     this.y = y;
     this.pointSite = pointSite;
   }
+
   draw() {
     noStroke();
     if (this.pointSite !== null) {
@@ -56,22 +57,24 @@ class Square {
     }
     rect(this.x, this.y, SQUARE_SIZE, SQUARE_SIZE);
   }
+
   getCenterPoint() {
     return new Point(
       int(this.x + SQUARE_SIZE / 2),
       int(this.y + SQUARE_SIZE / 2)
     );
   }
+
   setPointSite(pointSite) {
     this.pointSite = pointSite;
   }
 }
 
-var SQUARE_SIZE = 5;
+var SQUARE_SIZE = 3;
 var points = [];
 var squares = [];
-var input;
 
+// Implemented by Andrea and Loïc
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
@@ -101,9 +104,13 @@ function setup() {
   reportButton.mousePressed(loadReport);
 
   //test();
+  //testParallelPoints();
 }
 
+// Implemented by Andrea
+// Used to do our analysis
 function test() {
+  // Randomly chosen points
   points.push(new Point(100, 200));
   points.push(new Point(300, 300));
   points.push(new Point(250, 500));
@@ -121,6 +128,14 @@ function test() {
   points.push(new Point(1500, 390));
   points.push(new Point(1700, 890));
   points.push(new Point(1800, 200));
+}
+
+// Implemented by Loïc
+function testParallelPoints() {
+  points.push(new Point(150, 200));
+  points.push(new Point(300, 200));
+  points.push(new Point(600, 200));
+  points.push(new Point(1000, 200));
 }
 
 function reset() {
@@ -142,17 +157,15 @@ function draw() {
   }
 }
 
+// Implemented by Andrea
 function mousePressed() {
-  if (mouseOnButton(computeButton)) {
+  if (
+    mouseOnButton(computeButton) ||
+    mouseOnButton(resetButton) ||
+    mouseOnButton(cerbysevButton) ||
+    mouseOnInput()
+  )
     return;
-  }
-  if (mouseOnButton(resetButton)) {
-    return;
-  }
-  if (mouseOnButton(cerbysevButton)) {
-    return;
-  }
-  if (mouseOnInput()) return;
   points.push(new Point(mouseX, mouseY));
 }
 
@@ -161,6 +174,7 @@ windowResized = function () {
   resizeCanvas(windowWidth, windowHeight);
 };
 
+// Implemented by Loïc
 function getNearestPt(centerPt, p) {
   let minDist = Infinity;
   let nearest;
@@ -174,6 +188,7 @@ function getNearestPt(centerPt, p) {
   return nearest;
 }
 
+// Implemented by Andrea
 function distanceInducedByLP(point1, point2, p) {
   if (p === Infinity) {
     return cerbysevDistance(point1, point2);
@@ -183,17 +198,20 @@ function distanceInducedByLP(point1, point2, p) {
   return Math.pow(Math.pow(dx, p) + Math.pow(dy, p), 1 / p);
 }
 
+// Implemented by Andrea
 function cerbysevDistance(point1, point2) {
   var dx = Math.abs(point2.x - point1.x);
   var dy = Math.abs(point2.y - point1.y);
   return max(dx, dy); // cerbysev distance formula
 }
 
+// Implemented by Andrea
 function LInfinityDistance() {
   p = Infinity;
   computeVoronoi(p);
 }
 
+// Implemented by Andrea
 function assignPAndComputeVoronoi() {
   let p = Number(input.value());
 
@@ -205,6 +223,7 @@ function assignPAndComputeVoronoi() {
   computeVoronoi(p);
 }
 
+// Implemented by Andrea and Loïc
 function computeVoronoi(p) {
   // Compute Voronoi regions
   for (let i = 0; i < height; i += SQUARE_SIZE) {
@@ -222,6 +241,7 @@ function computeVoronoi(p) {
   });
 }
 
+// Implemented by Andrea
 // return true if the mouse is on the given button
 function mouseOnButton(button) {
   if (
@@ -236,6 +256,8 @@ function mouseOnButton(button) {
   }
 }
 
+// Implemented by Loïc
+// return true if the mouse is on the input textbox
 function mouseOnInput() {
   if (
     (mouseX >= input.x) &
@@ -249,6 +271,7 @@ function mouseOnInput() {
   }
 }
 
+// Implemented by Andrea
 function loadReport() {
   window.open("report.html", "_self");
 }
