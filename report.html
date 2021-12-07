@@ -63,23 +63,19 @@
     </p>
     <h3>Duality</h3>
     <p> 
-        The dual problem of the Voronoi diagrams is
-         the Delaunay triangulation. 
-         The Delaunay triangulation for a given set P of discrete
-          points in a general position is a triangulation DT(P) 
-          such that no point in P is inside the circumcircle
-           of any triangle in DT(P).
+         The Delaunay triangulation of a set of points S, denoted DT(S), 
+         is the dual graph of the Voronoi diagram V(S) of S. If the points 
+         p<sub>i</sub> &isin; S are the vertices of DT(S) we say that two vertices are connected
+        by an edge if the corresponding Voronoi cells are adjacent.
          <br>
-         We could use this triangulation to compute the corresponding Voronoi diagram. 
-         If two triangles share an edge in the Delaunay triangulation, their 
-         circumcenters are to be connected with an edge in the Voronoi diagram. This is 
-         done by finding a circle such that at least 3 points of the Delaunay triangulation are on it's border. 
-         If this is the case, then the center of the circle is a Voronoi vertex. 
+         We could use this triangulation to compute the corresponding Voronoi diagram.
+         This is done by finding two triangles that share an edge in the Delaunay triangulation.
+         If this is the case, their circumcenters are to be connected with an edge in the Voronoi diagram.
     </p>
 
 <h2>Nice metrics</h2>
 <p> Voronoi diagrams are usually computed using 
-    the euclidean distance but it is interesting
+    the Euclidean distance but it is interesting
      to see what happens when using another distance which respects some properties. Here we will only focus on <i>nice metrics</i>. To be nice, a metric <i>d</i> 
      has to have the following properties:
      <ol>
@@ -136,7 +132,8 @@
     <p>The most famous algorithm to compute a Voronoi diagram
          is called Fortune's algorithm which runs in O(nlogn) time complexity
         where n is the number of sites. 
-        It is way more complex than the brute force algorithm and therefore difficult to understand. The idea behind it is to use:
+        It is way more complex than the brute force algorithm and therefore difficult to understand. The idea behind it is to
+        sort the points according to their x or y-coordinate and use:
         <ul>
             <li> a sweepline which sweeps the set of sites from top to bottom to separate the processed and unprocessed sites.</li>
             <li> a beach line which creates a new parabolic arc every time the sweepline encounters a new site. These arcs grow
@@ -150,7 +147,9 @@
         <li>a priority queue for the events.</li> 
     </ul>
     Every time an event is handled, the doubly connected edge list and the queue are modified, and the algorithm halts when the queue is 
-    empty.
+    empty.<br>
+    Handling events can be done in O(logn) time and since there are n sites, the total running time for Fortune's
+    algorithm is O(nlogn). A more detailed explanation is available in [9].
     </p>
 
 <h2>Divide and conquer algorithm</h2>
@@ -158,9 +157,9 @@
 There is another interesting approach which is the divide and
  conquer approach introduced by Shamos and Hoey [7].
  Unfortunately we could not use it because
-  it does not work with distances that are not convex.
+  it does not work with distances that are not convex functions.
    But is nonetheless important to mention it because
-    it also runs in O(nlogn) time complexity.
+    it also runs in O(nlogn) time complexity. 
 <br>
 <!--The main idea of this algorithm is to make a partition
  of the space every time in 4 zones that are a retangular.
@@ -169,8 +168,13 @@ There is another interesting approach which is the divide and
    If the previous condition is not meet then algorithm continue to devide the zone
     by doing a 4-partition recursively. -->
     The main idea of the algorithm is to divide the set of sites into 2 sets of the same
-    size, the left set and the right set. Once this is done, we compute the Voronoi 
-    diagram of the two sets V(L) and V(R) recursively and merge these.
+    size, the left set L and the right set R. The first step is to sort the sites according to their
+    x-coordinate. Once this is done, we compute the Voronoi 
+    diagram of the two sets V(L) and V(R) recursively and merge both results. <br>
+    The sorting part takes O(nlogn) time and the merging part takes O(n) time. So 
+    recursively dividing the set of sites altogether also takes O(nlogn) time complexity.
+    So we can conclude that the total running time for this divide and conquer algorithm 
+    is O(nlogn) as explained in [9].
 </p>
 <p>
 There are many different implementations and ideas for the divide and conquer technique, 
@@ -213,10 +217,7 @@ another one is detailed by Smith, Trefftz and DeVries [8].
       every region is convex but this is not always true when using other type of distances.<br>
     Another result is that for the Euclidean distance the Voronoi
      edges are straight lines but for 
-    other cases, the edges are not straight.<br>
-    Note that for our tests we computed the Voronoi diagrams
-     using the brute force algorithm by grouping the pixels by squares
-      of size 3.
+    other distances, most edges are not straight.
 </p>
 <figure>
         <img src="img/L1.png" height=270 width=570>
@@ -230,13 +231,44 @@ another one is detailed by Smith, Trefftz and DeVries [8].
         <img src="img/l3.png" height=270 width=570>
         <figcaption>Voronoi diagrams using distance induced by norm L<sub>3</sub></figcaption>
 </figure>
+    <p> Another experiment we did was computing the Voronoi diagrams of four parallel sites using different 
+        values for the L<sub>p</sub> distance. For small enough values of <i>p</i> the Voronoi edges are
+        parallel straight lines, but when doing this for the Chebyshev distance (L<sub>&infin;</sub>) 
+        this property is not true anymore. We can see that for the L<sub>20</sub> distance, irregularities
+        already start to appear.
+    </p>
+    <figure>
+            <img src="img/parallelL2.PNG" height=270 width=570>
+            <figcaption>Voronoi diagrams of parallel points using Euclidean distance</figcaption>
+    </figure>
+    <figure>
+            <img src="img/parallelL20.PNG" height=270 width=570>
+            <figcaption>Voronoi diagrams of parallel points using L<sub>20</sub> distance</figcaption>
+    </figure>
+    <figure>
+            <img src="img/parallelChebyshev.PNG" height=270 width=570>
+            <figcaption>Voronoi diagrams of parallel points using Chebyshev distance</figcaption>
+    </figure>
+    Note that for our tests we computed the Voronoi diagrams
+    using the brute force algorithm by grouping the pixels by squares
+    of size 3.<br>
+    The exact coordinates of the points used for these tests can be seen in the methods <i>test()</i> and <i> testParallelPoints()</i>.
 
+<h1>Work distribution</h1>
+All the members of the team did some individual research about the given topic.<br>
+After realizing that was not worth the effort to write Fortune's algorithm
+ Andrea proposed to implement the brute force algorithm. <br>
+Both members of the team worked in the implementation of the code but mainly is written by Andrea (70%). A more 
+detailed explanation is given in the code as a comment above every function.<br>
+Both members of the team worked on writing the report but it is mainly written by Loïc (70%).<br>
+Loïc proposed and did the analysis of the Voronoi diagrams in the special case of parallel points.<br>
+We consider that all members of the team made an equal effort in the project.
 
 <h1>Conclusion</h1>
 <p>
     From what we observed in the analysis, we can say that, as stated before, the shape of the Voronoi
     diagram changes depending on which distances was used. It is interesting to see how the curves
-    change from one formula to another.<br> 
+    change from one formula to another. Remember that every experiment was done using nice metrics.<br> 
     Another exercice would be to take our idea and implement Fortune's algorithm to compute a more 
     precise diagram than with our brute force approach. We could set the size of the squares to 1
     but the computation would take a really long time since it has to go through every pixel. Unfortunately
@@ -244,6 +276,7 @@ another one is detailed by Smith, Trefftz and DeVries [8].
 </p>
 
 <h1>References</h1>
+Scientific papers:
 <ol start="1">
         <li> L. Paul Chew, Robert L. (Scot) Drysdalc. "Voronoi Diagrams Based on Convex Distance Functions". In: 1985.</li>
         <li> Rolf Klein, Elmar Langetepe, and Zahra Nilforoushan. “Abstract Voronoi diagrams revisited”. In: 2008.</li>
@@ -254,7 +287,14 @@ another one is detailed by Smith, Trefftz and DeVries [8].
         <li> M. I. Shamos and D. Hoey. "Closest-point problems". In: 1975. </li> 
         <li> E. Smith, C. Trefftz and B. DeVries. "A Divide-and-Conquer Algorithm for Computing Voronoi Diagrams". In: 2020. </li>
       </ol> 
-</div>
+Other useful resources:
+<ol start="9">
+    <li> M. de Berg, M. van Kreveld, M. Overmars, O. Schwarzkopf. 
+        Computational Geometry: Algorithms and Applications. In: 2008.
+        Avaiable at: http://www.cs.uu.nl/geobook/.
+    </li>
+</ol>
+    </div>
 
 </body>
 </html>
